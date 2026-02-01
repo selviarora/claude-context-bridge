@@ -4,8 +4,6 @@
 (function() {
   'use strict';
 
-  console.log('[CCB] Claude Context Bridge content script loaded');
-
   let buttonInjected = false;
 
   // SVG Icons
@@ -191,7 +189,6 @@
 
     document.body.appendChild(button);
     buttonInjected = true;
-    console.log('[CCB] Button injected');
   }
 
   // Wait for page to load, then inject
