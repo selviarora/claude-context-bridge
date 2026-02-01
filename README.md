@@ -2,13 +2,7 @@
 
 bridge your claude.ai planning sessions to claude code with one click.
 
-## why i built this
-
-i kept running into the same problem: i'd spend time planning something in claude.ai, then switch to claude code to actually build it. but claude code had no idea what i just discussed. i'd end up copy-pasting or re-explaining everything. annoying.
-
-so i made this - a chrome extension + mcp server that sends conversations from claude.ai to claude code.
-
-built for [this feature request](https://github.com/anthropics/claude-code/issues/13843).
+this is a chrome extension + mcp server that sends conversations from claude.ai to claude code so no context is lost when you go from browser to terminal. 
 
 ## how it works
 
