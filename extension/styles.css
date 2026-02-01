@@ -3,7 +3,7 @@
 /* Main export button - subtle, pill-shaped, matches Claude.ai aesthetic */
 #ccb-export-button {
   position: fixed;
-  top: 16px;
+  top: 60px;
   right: 16px;
   z-index: 10000;
 
