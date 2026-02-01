@@ -19,6 +19,7 @@ claude.ai                              your machine                         clau
 
 ## setup
 
+
 **1. clone & install**
 
 ```bash
@@ -37,7 +38,8 @@ node install.js
 **3. configure native messaging**
 
 ```bash
-node install.js native-host <your-extension-id>
+node install.js native-![Uploading Screenshot 2026-01-31 at 9.14.23 PM.png…]()
+host <your-extension-id>
 ```
 
 **4. restart claude code**
@@ -50,6 +52,9 @@ the mcp server gets configured automatically. just restart claude code to load i
 - have a conversation
 - click the "send to claude code" button (top right)
 - name it something memorable
+
+<img width="305" height="48" alt="Screenshot 2026-01-31 at 9 16 26 PM" src="https://github.com/user-attachments/assets/5b5d0519-81ce-44dc-b703-6d5f1dbcbf4e" />
+
 
 **in claude code:**
 ```
