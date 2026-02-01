@@ -1,0 +1,31 @@
+{
+  "name": "claude-context-bridge",
+  "version": "1.0.0",
+  "description": "Bridge conversations from Claude.ai to Claude Code",
+  "type": "module",
+  "main": "install.js",
+  "bin": {
+    "claude-context-bridge": "./install.js"
+  },
+  "scripts": {
+    "install-native-host": "node install.js native-host",
+    "install-mcp": "node install.js mcp",
+    "install-all": "node install.js"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "mcp",
+    "context",
+    "bridge"
+  ],
+  "author": "Selvi Arora",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/selviarora/claude-context-bridge"
+  },
+  "devDependencies": {
+    "canvas": "^3.2.1"
+  }
+}

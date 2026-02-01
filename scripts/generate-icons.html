@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generate Extension Icons</title>
+  <style>
+    body {
+      font-family: -apple-system, system-ui, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #1c1917;
+      color: #fafaf9;
+    }
+    h1 { margin-bottom: 8px; }
+    p { color: #a8a29e; margin-bottom: 24px; }
+    .icons {
+      display: flex;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+    .icon-container {
+      text-align: center;
+    }
+    .icon-container span {
+      display: block;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #78716c;
+    }
+    canvas {
+      border-radius: 8px;
+      background: #292524;
+    }
+    button {
+      background: #c2410c;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    button:hover { background: #ea580c; }
+    .instructions {
+      margin-top: 24px;
+      padding: 16px;
+      background: #292524;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .instructions ol {
+      margin: 8px 0 0 0;
+      padding-left: 20px;
+    }
+    .instructions li {
+      margin: 4px 0;
+      color: #d6d3d1;
+    }
+    code {
+      background: #1c1917;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Claude Context Bridge Icons</h1>
+  <p>Click each icon to download, or use "Download All" to get them as a zip.</p>
+
+  <div class="icons">
+    <div class="icon-container">
+      <canvas id="icon16" width="16" height="16"></canvas>
+      <span>16×16</span>
+    </div>
+    <div class="icon-container">
+      <canvas id="icon48" width="48" height="48"></canvas>
+      <span>48×48</span>
+    </div>
+    <div class="icon-container">
+      <canvas id="icon128" width="128" height="128"></canvas>
+      <span>128×128</span>
+    </div>
+  </div>
+
+  <button onclick="downloadAll()">Download All Icons</button>
+
+  <div class="instructions">
+    <strong>After downloading:</strong>
+    <ol>
+      <li>Move the PNG files to <code>extension/icons/</code></li>
+      <li>Reload the extension in Chrome</li>
+    </ol>
+  </div>
+
+  <script>
+    const sizes = [16, 48, 128];
+
+    function drawIcon(canvas) {
+      const ctx = canvas.getContext('2d');
+      const size = canvas.width;
+      const padding = size * 0.1;
+
+      // Background gradient
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, '#1c1917');
+      gradient.addColorStop(1, '#292524');
+
+      // Rounded rectangle background
+      ctx.fillStyle = gradient;
+      roundedRect(ctx, 0, 0, size, size, size * 0.2);
+      ctx.fill();
+
+      // Arrow icon
+      ctx.strokeStyle = '#f5f5f4';
+      ctx.lineWidth = Math.max(1, size * 0.08);
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+
+      const iconPadding = size * 0.25;
+      const startX = iconPadding;
+      const startY = size - iconPadding;
+      const endX = size - iconPadding;
+      const endY = iconPadding;
+
+      // Main arrow line
+      ctx.beginPath();
+      ctx.moveTo(startX, startY);
+      ctx.lineTo(endX, endY);
+      ctx.stroke();
+
+      // Arrow head
+      const headSize = size * 0.2;
+      ctx.beginPath();
+      ctx.moveTo(endX - headSize, endY);
+      ctx.lineTo(endX, endY);
+      ctx.lineTo(endX, endY + headSize);
+      ctx.stroke();
+
+      // Terminal prompt accent
+      ctx.strokeStyle = '#c2410c';
+      ctx.lineWidth = Math.max(1, size * 0.06);
+      const promptX = iconPadding;
+      const promptY = size - iconPadding - size * 0.15;
+      ctx.beginPath();
+      ctx.moveTo(promptX, promptY);
+      ctx.lineTo(promptX + size * 0.12, promptY - size * 0.08);
+      ctx.lineTo(promptX, promptY - size * 0.16);
+      ctx.stroke();
+    }
+
+    function roundedRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+    }
+
+    // Draw all icons
+    sizes.forEach(size => {
+      const canvas = document.getElementById('icon' + size);
+      drawIcon(canvas);
+
+      // Click to download individual icon
+      canvas.style.cursor = 'pointer';
+      canvas.onclick = () => downloadIcon(canvas, size);
+    });
+
+    function downloadIcon(canvas, size) {
+      const link = document.createElement('a');
+      link.download = `icon${size}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    function downloadAll() {
+      sizes.forEach(size => {
+        const canvas = document.getElementById('icon' + size);
+        setTimeout(() => downloadIcon(canvas, size), size * 2);
+      });
+    }
+  </script>
+</body>
+</html>

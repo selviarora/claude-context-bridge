@@ -1,0 +1,7 @@
+{
+  "name": "com.claude.contextbridge",
+  "description": "Claude Context Bridge Native Host",
+  "path": "HOST_PATH_PLACEHOLDER",
+  "type": "stdio",
+  "allowed_origins": ["EXTENSION_ID_PLACEHOLDER"]
+}

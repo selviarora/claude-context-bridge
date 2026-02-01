@@ -1,0 +1,7 @@
+{
+  "name": "claude-context-bridge-native-host",
+  "version": "1.0.0",
+  "description": "Native messaging host for Claude Context Bridge",
+  "main": "host.js",
+  "type": "commonjs"
+}
