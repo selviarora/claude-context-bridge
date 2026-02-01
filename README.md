@@ -53,8 +53,6 @@ the mcp server gets configured automatically. just restart claude code to load i
 - click the "send to claude code" button (top right)
 - name it something memorable
 
-<img width="305" height="48" alt="Screenshot 2026-01-31 at 9 16 26 PM" src="https://github.com/user-attachments/assets/5b5d0519-81ce-44dc-b703-6d5f1dbcbf4e" />
-
 
 **in claude code:**
 ```
