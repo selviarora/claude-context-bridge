@@ -1,4 +1,4 @@
-# claude context bridge
+# claude context bridge 🪄
 
 bridge your claude.ai planning sessions to claude code with one click.
 
