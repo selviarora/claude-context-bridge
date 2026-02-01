@@ -3,8 +3,8 @@
 /* Main export button - subtle, pill-shaped, matches Claude.ai aesthetic */
 #ccb-export-button {
   position: fixed;
-  top: 60px;
-  right: 16px;
+  top: 16px;
+  right: 100px;
   z-index: 10000;
 
   /* Subtle dark background that fits Claude.ai */
