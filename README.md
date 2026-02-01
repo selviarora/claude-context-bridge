@@ -1,6 +1,6 @@
 # claude context bridge 🪄
 
-bridge your claude.ai planning sessions to claude code with one click.
+bridge your claude.ai conversations to claude code with one click.
 
 this is a chrome extension + mcp server that sends conversations from claude.ai to claude code so no context is lost when you go from browser to terminal. 
 
