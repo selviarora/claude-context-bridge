@@ -38,8 +38,7 @@ node install.js
 **3. configure native messaging**
 
 ```bash
-node install.js native-![Uploading Screenshot 2026-01-31 at 9.14.23 PM.png…]()
-host <your-extension-id>
+node install.js native-host <your-extension-id>
 ```
 
 **4. restart claude code**
@@ -75,6 +74,8 @@ contexts are saved to `~/.claude/contexts/` as markdown.
 ## troubleshooting
 
 **"native host not found"** - run `node install.js native-host <extension-id>` with your actual extension id
+
+**"native host has exited"** - chrome couldn't start node. pull the latest, re-run `node install.js native-host <extension-id>` (it pins the node you run it with), then reload the extension. if you switch node versions later (nvm etc), re-run it
 
 **button doesn't show up** - make sure you're on a `/chat/` page, try refreshing
 

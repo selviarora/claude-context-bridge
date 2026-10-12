@@ -42,33 +42,68 @@ function getNativeHostDir() {
   throw new Error(`Unsupported platform: ${PLATFORM}`);
 }
 
+// Other Chromium browsers that read their own NativeMessagingHosts dir (only used if installed)
+function getExtraBrowserDirs() {
+  const dirs = PLATFORM === 'darwin' ? [
+    ['Library', 'Application Support', 'Chromium'],
+    ['Library', 'Application Support', 'BraveSoftware', 'Brave-Browser'],
+    ['Library', 'Application Support', 'Microsoft Edge'],
+  ] : PLATFORM === 'linux' ? [
+    ['.config', 'chromium'],
+    ['.config', 'BraveSoftware', 'Brave-Browser'],
+    ['.config', 'microsoft-edge'],
+  ] : [];
+  return dirs
+    .map(d => path.join(HOME, ...d))
+    .filter(d => fs.existsSync(d))
+    .map(d => path.join(d, 'NativeMessagingHosts'));
+}
+
+// Prefer the `node` on the user's PATH (e.g. /opt/homebrew/bin/node, which
+// survives `brew upgrade`) over process.execPath (a versioned Cellar path)
+function findNode() {
+  for (const dir of (process.env.PATH || '').split(path.delimiter)) {
+    const p = path.join(dir, 'node');
+    try { fs.accessSync(p, fs.constants.X_OK); return p; } catch {}
+  }
+  return process.execPath;
+}
+
 function installNativeHost(extensionId) {
   heading('Installing Native Messaging Host');
 
-  const hostDir = getNativeHostDir();
   const hostScriptPath = path.join(__dirname, 'native-host', 'host.js');
-  const manifestPath = path.join(hostDir, 'com.claude.contextbridge.json');
+  const launcherPath = path.join(__dirname, 'native-host', 'host-launcher.sh');
 
-  // Create directory if needed
-  if (!fs.existsSync(hostDir)) {
-    fs.mkdirSync(hostDir, { recursive: true });
-    success(`Created directory: ${hostDir}`);
-  }
-
-  // Make host script executable
+  // Chrome launches native hosts with a bare PATH (/usr/bin:/bin:...), so
+  // `#!/usr/bin/env node` fails for Homebrew/nvm installs and Chrome reports
+  // "Native host has exited." Pin the node that is running this installer.
+  const nodePath = findNode();
+  fs.writeFileSync(launcherPath,
+    `#!/bin/sh\nexec "${nodePath}" "${hostScriptPath}" "$@"\n`);
+  fs.chmodSync(launcherPath, '755');
   fs.chmodSync(hostScriptPath, '755');
+  success(`Created launcher using node at ${nodePath}`);
 
-  // Create manifest
   const manifest = {
     name: 'com.claude.contextbridge',
     description: 'Claude Context Bridge Native Host',
-    path: hostScriptPath,
+    path: launcherPath,
     type: 'stdio',
     allowed_origins: [`chrome-extension://${extensionId}/`]
   };
 
-  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
-  success(`Installed native host manifest: ${manifestPath}`);
+  let manifestPath;
+  for (const hostDir of [getNativeHostDir(), ...getExtraBrowserDirs()]) {
+    if (!fs.existsSync(hostDir)) {
+      fs.mkdirSync(hostDir, { recursive: true });
+      success(`Created directory: ${hostDir}`);
+    }
+    const p = path.join(hostDir, 'com.claude.contextbridge.json');
+    fs.writeFileSync(p, JSON.stringify(manifest, null, 2));
+    success(`Installed native host manifest: ${p}`);
+    manifestPath = manifestPath || p;
+  }
 
   // Create contexts directory
   const contextsDir = path.join(HOME, '.claude', 'contexts');

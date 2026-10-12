@@ -14,53 +14,34 @@ if (!fs.existsSync(CONTEXTS_DIR)) {
   fs.mkdirSync(CONTEXTS_DIR, { recursive: true });
 }
 
-// Read message from stdin (Chrome native messaging protocol)
+// Read message from stdin (Chrome native messaging protocol):
+// 4-byte little-endian length, then that many bytes of UTF-8 JSON
 function readMessage() {
   return new Promise((resolve, reject) => {
-    let chunks = [];
+    let buf = Buffer.alloc(0);
 
-    // First 4 bytes are message length (little-endian)
-    process.stdin.once('readable', () => {
-      const lengthBuffer = process.stdin.read(4);
-      if (!lengthBuffer) {
-        reject(new Error('No input'));
-        return;
+    process.stdin.on('data', chunk => {
+      buf = Buffer.concat([buf, chunk]);
+      if (buf.length < 4) return;
+      const messageLength = buf.readUInt32LE(0);
+      if (buf.length < 4 + messageLength) return;
+      process.stdin.pause();
+      try {
+        resolve(JSON.parse(buf.subarray(4, 4 + messageLength).toString('utf8')));
+      } catch (e) {
+        reject(new Error('Invalid JSON: ' + e.message));
       }
-
-      const messageLength = lengthBuffer.readUInt32LE(0);
-      let remaining = messageLength;
-
-      const readChunk = () => {
-        const chunk = process.stdin.read(remaining);
-        if (chunk) {
-          chunks.push(chunk);
-          remaining -= chunk.length;
-        }
-
-        if (remaining > 0) {
-          process.stdin.once('readable', readChunk);
-        } else {
-          const fullMessage = Buffer.concat(chunks).toString('utf8');
-          try {
-            resolve(JSON.parse(fullMessage));
-          } catch (e) {
-            reject(new Error('Invalid JSON: ' + e.message));
-          }
-        }
-      };
-
-      readChunk();
     });
+    process.stdin.on('end', () => reject(new Error('No input')));
   });
 }
 
 // Write message to stdout (Chrome native messaging protocol)
 function sendMessage(msg) {
-  const json = JSON.stringify(msg);
-  const buffer = Buffer.alloc(4 + json.length);
-  buffer.writeUInt32LE(json.length, 0);
-  buffer.write(json, 4);
-  process.stdout.write(buffer);
+  const json = Buffer.from(JSON.stringify(msg), 'utf8');
+  const header = Buffer.alloc(4);
+  header.writeUInt32LE(json.length, 0);
+  process.stdout.write(Buffer.concat([header, json]));
 }
 
 async function main() {
